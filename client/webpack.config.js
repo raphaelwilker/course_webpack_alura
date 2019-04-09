@@ -7,6 +7,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let plugins = [];
 
+plugins.push(new HtmlWebpackPlugin({
+    hash: true,
+    minify: {
+        html5: true,
+        collapseWhitespace: true,
+        removeComments: true,
+    },    
+    filename: 'index.html',
+    template: __dirname + '/main.html'
+}));
+
 plugins.push(new extractTextPlugin('styles.css'));
 
 plugins.push(new webpack.ProvidePlugin({
@@ -24,18 +35,11 @@ plugins.push(
     )
 );
 
-plugins.push(new HtmlWebpackPlugin({
-    hash: true,
-    minify: {
-        html5: true,
-        collapseWhitespace: true,
-        removeComments: true,
-    },    
-    filename: 'index.html',
-    template: __dirname + '/main.html'
-}));
+let SERVICE_URL = JSON.stringify('http://localhost:3000');
 
 if(process.env.NODE_ENV == 'production') {
+
+	SERVICE_URL = JSON.stringify('http://endereco-da-sua-api');
 
 	plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
 
@@ -52,6 +56,8 @@ if(process.env.NODE_ENV == 'production') {
     	})
     )
 }
+
+plugins.push(new webpack.DefinePlugin({ SERVICE_URL: SERVICE_URL }))
 
 module.exports = {
 
